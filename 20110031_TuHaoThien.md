@@ -80,7 +80,7 @@ _start:
 ```bash
 nano redundant_code.c
 ```
-![image](https://github.com/user-attachments/assets/2e434b7b-7ddf-4675-8e55-54fbc71d3579)
+![image]([https://github.com/user-attachments/assets/2e434b7b-7ddf-4675-8e55-54fbc71d3579](https://github.com/thien1103/InformationSecurity/blob/main/1.png))
 
 Create a C program that contains a buffer overflow vulnerability
 
