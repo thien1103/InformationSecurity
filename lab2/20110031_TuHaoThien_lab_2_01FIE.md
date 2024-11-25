@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/4d021fb8-3059-4d0b-8e35-efc7552227a5)# Task 1: Transfer files between computers  
+![image](https://github.com/user-attachments/assets/626d9ece-9f2a-4e2d-8254-26984a7b7623)![image](https://github.com/user-attachments/assets/db1cf4ff-75de-41d9-9a1e-95a4a912bdf5)![image](https://github.com/user-attachments/assets/4d021fb8-3059-4d0b-8e35-efc7552227a5)# Task 1: Transfer files between computers  
 **Question 1**: 
 Conduct transfering a single plaintext file between 2 computers, 
 Using openssl to implementing measures manually to ensure file integerity and authenticity at sending side, 
@@ -208,3 +208,33 @@ apt update
 apt install iptables curl openssh-server apache2 -y
 ```
 **Step 2:** Configure the Receiver Container (Web and SSH Server)
+Inside the Receiver container, start the Apache web server, the Receiver container will act as both a web server and an SSH server:
+This command will run the apache server directly
+```
+service apache2 start
+```
+Check the apache server status
+```
+root@463aa92db351:/# service apache2 status
+```
+![image](https://github.com/user-attachments/assets/45f14dce-1617-4dcc-a673-4a00e25e7ab6)
+Note: My apache server is running on: 172.17.0.3
+
+Inside the Receiver container, start the SSH service:
+```
+/usr/sbin/sshd
+```
+![image](https://github.com/user-attachments/assets/e7057d39-4bd6-47a9-87bb-8d799e3830e2)
+
+**Step 3:** Test Web and SSH Connectivity
+Previously, we have gain the url of apache server is 172.17.0.3, so we use curl to test the site:
+```
+ curl http://172.17.0.3 
+```
+![image](https://github.com/user-attachments/assets/2e1de013-f797-4c88-987e-b92b9912b90b)
+
+
+
+
+
+
