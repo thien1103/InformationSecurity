@@ -11,32 +11,41 @@ Setup in Docker Desktop
 Simulate two computers by creating two Docker containers: Sender and Receiver.
 
 Open a terminal and create the Sender container:
-bash
-Copy code
+```
 docker run -it --name sender ubuntu
+```
 Create the Receiver container:
-bash
-Copy code
+```
 docker run -it --name receiver ubuntu
-Both containers should now be running Ubuntu.
+```
+
 
 **Step 2:** Install OpenSSL
+We need OpenSSL for generating keys, signing files, and verifying signatures. We'll install OpenSSL in both the Sender and Receiver containers.
 Inside each container, install OpenSSL:
-
 For Sender:
-bash
-Copy code
+```
 apt update && apt install -y openssl
-Repeat the same in the Receiver container.
+```
+Repeat the same to install openssl in the Receiver container.
 
 **Step 3:** Generate Keys for Authenticity
 Run these commands in the sender container key:
 ```
 openssl genrsa -out private_key.pem 2048
+```
+openssl genrsa: Generates an RSA private key.
+-out private_key.pem: Specifies the file to store the private key.
+2048: The number of bits for the key. A larger number means stronger encryption.
+```
 openssl rsa -in private_key.pem -pubout -out public_key.pem
 ```
-private_key.pem: Used for signing.
-public_key.pem: Shared with the receiver for verification.
+openssl rsa: This command allows you to work with RSA keys.
+-in private_key.pem: Specifies the private key file.
+-pubout: Tells OpenSSL to output the corresponding public key.
+-out public_key.pem: Specifies the file to store the public key.
+
+We need a private key to sign files (only the Sender knows this) and a public key to verify the signature (the Receiver uses this). These keys are a core part of digital signatures and cryptographic verification.
 
 ![image](https://github.com/user-attachments/assets/7d064b3d-63b5-46df-9863-3f23f0e0fac2)
 
@@ -64,7 +73,13 @@ Then we sign the file for authenticity with openssl
 ```
 openssl dgst -sha256 -sign private_key.pem -out signature.bin message.txt
 ```
-Now, we will have the file signature.bin
+openssl dgst: This is used to create a hash of the file.
+-sha256: Specifies the hash algorithm (SHA-256).
+-sign private_key.pem: Signs the hash using the private key.
+-out signature.bin: The signed hash is saved in signature.bin.
+message.txt: The file to be signed.
+
+Now, we should have the file signature.bin
 ![image](https://github.com/user-attachments/assets/b17c72a8-101c-49cf-83ca-a280599a4f9a)
 Now, we cope the file signature.bin and message.txt to the receiver container like Step 3
 ```
